@@ -70,13 +70,13 @@ public class ReverseListTwo {
         ListNode tail = rightNode.next;
         rightNode.next = null;
 
-        leftNode.next = middleReverse(leftNode.next,tail);
+        leftNode.next = reverseList2(leftNode.next,tail);
 
         return newNode.next;
 
     }
 
-    public static ListNode middleReverse(ListNode head,ListNode tail){
+    public static ListNode reverseList2(ListNode head,ListNode tail){
         ListNode pre = head,mid = head.next;
 
         while (pre != null){
