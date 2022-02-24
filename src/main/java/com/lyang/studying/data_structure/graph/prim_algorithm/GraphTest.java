@@ -11,6 +11,9 @@ import java.util.Arrays;
 public class GraphTest {
 
     public static void main(String[] args) {
+
+
+        System.out.println("======获取第一个相邻顶点======");
         Graph graph = new Graph(9);
         Vertex v0 = new Vertex("V0");
         Vertex v1 = new Vertex("V1");
@@ -65,10 +68,7 @@ public class GraphTest {
         System.out.println("==========邻接矩阵==========");
         for (int[] ints : graph.adjMat) {
             System.out.println(Arrays.toString(ints));
-        }
-
-        System.out.println("======获取第一个相邻顶点======");
-        System.out.println(graph.getFirstNeighbor(v0).getValue()+" 邻接 V1");
+        }     System.out.println(graph.getFirstNeighbor(v0).getValue()+" 邻接 V1");
         System.out.println(graph.getFirstNeighbor(v1).getValue()+" 邻接 V0");
         System.out.println(graph.getFirstNeighbor(v2).getValue()+" 邻接 V1");
         System.out.println(graph.getFirstNeighbor(v3).getValue()+" 邻接 V2");
@@ -94,6 +94,9 @@ public class GraphTest {
 
         System.out.println("======广度优先遍历======");
         graph.breadthFirstSearch();
+
+        System.out.println("======普里姆算法=======");
+        graph.prim2();
 
     }
 

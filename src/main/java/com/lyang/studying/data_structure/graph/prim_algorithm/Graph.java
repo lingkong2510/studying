@@ -1,5 +1,6 @@
 package com.lyang.studying.data_structure.graph.prim_algorithm;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -12,12 +13,15 @@ import java.util.Queue;
 public class Graph {
 
     private final Vertex[] vertices;
+    private int vertexSize;
     private int currIndex;
-    private final int DEFAULT = -1;
+    private final int DEFAULT = 1000;
     public int[][] adjMat;//邻接矩阵 adjacency matrix
     private boolean[] isVisited;
+    private int MAX_NUMBER = 1000;
 
     public Graph(int size) {
+        this.vertexSize = size;
         vertices = new Vertex[size];
         adjMat = new int[size][size];
         isVisited = new boolean[size];
@@ -40,8 +44,8 @@ public class Graph {
         int degree = 0;
         int row = getVertexIndex(vertex);
 
-        for(int i = 0;i<adjMat[row].length;i++){
-            if (adjMat[row][i] != 0 && adjMat[row][i] != DEFAULT){
+        for (int i = 0; i < adjMat[row].length; i++) {
+            if (adjMat[row][i] != 0 && adjMat[row][i] != DEFAULT) {
                 degree++;
             }
         }
@@ -51,10 +55,10 @@ public class Graph {
 
     public int getInDegree(Vertex vertex) {
         int degree = 0;
-        int column =getVertexIndex(vertex);
+        int column = getVertexIndex(vertex);
 
-        for(int i = 0;i<adjMat[column].length;i++){
-            if (adjMat[i][column] != 0 && adjMat[i][column] != DEFAULT){
+        for (int i = 0; i < adjMat[column].length; i++) {
+            if (adjMat[i][column] != 0 && adjMat[i][column] != DEFAULT) {
                 degree++;
             }
         }
@@ -72,15 +76,16 @@ public class Graph {
 
     /**
      * 获取某一个顶点的第一个邻接点
+     *
      * @param vertex 某一个顶点
      * @return 邻接点
      */
-    public Vertex getFirstNeighbor(Vertex vertex){
+    public Vertex getFirstNeighbor(Vertex vertex) {
         int index = getVertexIndex(vertex);
 
-        for (int i = 0;i<adjMat[index].length;i++) {
+        for (int i = 0; i < adjMat[index].length; i++) {
             int ele = adjMat[index][i];
-            if (ele != 0 && ele != DEFAULT){
+            if (ele != 0 && ele != DEFAULT) {
                 return vertices[i];
             }
         }
@@ -89,17 +94,18 @@ public class Graph {
 
     /**
      * 根据前一个邻接点的坐标获取下一个邻接点
+     *
      * @param v1 表示要找的顶点
      * @param v2 表示改顶点相对于哪个邻接点去获取下一个邻接点
      * @return 邻接点
      */
-    public Vertex getNextNeighbor(Vertex v1,Vertex v2){
+    public Vertex getNextNeighbor(Vertex v1, Vertex v2) {
         int currVertexIndex = getVertexIndex(v1);//当前顶点坐标
         int relativeVertexIndex = getVertexIndex(v2);//相对顶点坐标
 
         for (int i = relativeVertexIndex + 1; i < vertices.length; i++) {
             int ele = adjMat[currVertexIndex][i];
-            if (ele != 0 && ele != DEFAULT){
+            if (ele != 0 && ele != DEFAULT) {
                 return vertices[i];
             }
         }
@@ -107,75 +113,137 @@ public class Graph {
         return null;
     }
 
-    private void depthFirstSearch(Vertex vertex){
+    private void depthFirstSearch(Vertex vertex) {
         int currIndex = getVertexIndex(vertex);
         isVisited[currIndex] = true;
 
         Vertex firstNeighbor = this.getFirstNeighbor(vertex);
-        while (firstNeighbor != null){
+        while (firstNeighbor != null) {
             int index = getVertexIndex(firstNeighbor);
-            if (!isVisited[index]){
+            if (!isVisited[index]) {
                 //需要遍历的该顶点
-                System.out.println("访问到了："+firstNeighbor.getValue()+"顶点");
+                System.out.println("访问到了：" + firstNeighbor.getValue() + "顶点");
                 depthFirstSearch(firstNeighbor);
             }
-            firstNeighbor = getNextNeighbor(vertex,firstNeighbor);
+            firstNeighbor = getNextNeighbor(vertex, firstNeighbor);
         }
     }
 
-    public void depthFirstSearch(){
+    public void depthFirstSearch() {
         isVisited = new boolean[vertices.length];
-        for (int i = 0;i<vertices.length; i++){
-            if (!isVisited[i]){
-                System.out.println("访问到了："+vertices[i].getValue()+"顶点");
+        for (int i = 0; i < vertices.length; i++) {
+            if (!isVisited[i]) {
+                System.out.println("访问到了：" + vertices[i].getValue() + "顶点");
                 depthFirstSearch(vertices[i]);
             }
         }
         isVisited = new boolean[vertices.length];
     }
 
-    private int getVertexIndex(Vertex vertex){
-        for (int i = 0; i < vertices.length; i++){
-            if (vertices[i].getValue().equals(vertex.getValue())){
+    private int getVertexIndex(Vertex vertex) {
+        for (int i = 0; i < vertices.length; i++) {
+            if (vertices[i].getValue().equals(vertex.getValue())) {
                 return i;
             }
         }
         return -1;
     }
 
-    public  void breadthFirstSearch(){
+    public void breadthFirstSearch() {
         isVisited = new boolean[vertices.length];
-        for (int i = 0; i < vertices.length; i++){
-            if (!isVisited[i]){
-                System.out.println("访问到了:"+vertices[i].getValue()+"顶点");
+        for (int i = 0; i < vertices.length; i++) {
+            if (!isVisited[i]) {
+                System.out.println("访问到了:" + vertices[i].getValue() + "顶点");
                 breadthFirstSearch(vertices[i]);
             }
         }
         isVisited = new boolean[vertices.length];
     }
 
-    private void breadthFirstSearch(Vertex vertex){
-        Vertex curVertex,neighborVertex;
+    private void breadthFirstSearch(Vertex vertex) {
+        Vertex curVertex, neighborVertex;
         int index = this.getVertexIndex(vertex);
         isVisited[index] = true;
         Queue<Vertex> queue = new LinkedList<>();
         queue.add(vertex);
 
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             curVertex = queue.remove();
             neighborVertex = getFirstNeighbor(curVertex);
-            while (neighborVertex != null){
+            while (neighborVertex != null) {
                 int neighborIndex = getVertexIndex(neighborVertex);
-                if (!isVisited[neighborIndex]){
-                    System.out.println("访问到了:"+vertices[neighborIndex].getValue()+"顶点");
+                if (!isVisited[neighborIndex]) {
+                    System.out.println("访问到了:" + vertices[neighborIndex].getValue() + "顶点");
                     isVisited[neighborIndex] = true;
                     queue.add(neighborVertex);
                 }
-                neighborVertex = getNextNeighbor(curVertex,neighborVertex);
+                neighborVertex = getNextNeighbor(curVertex, neighborVertex);
             }
 
         }
 
+    }
+
+    public void prim() {
+        int[] lowcost = new int[vertexSize];
+        int[] adjvex = new int[vertexSize];
+        System.arraycopy(adjMat[0], 0, lowcost, 0, vertices.length);
+        int min, minIndex, sum = 0;
+        for (int i = 1; i < vertexSize; i++) {
+            min = MAX_NUMBER;
+            minIndex = 0;
+            for (int j = 0; j < vertexSize; j++) {
+                if (lowcost[j] != 0 && lowcost[j] < min) {
+                    min = lowcost[j];
+                    minIndex = j;
+                }
+            }
+            System.out.println("顶点:" + adjvex[minIndex] + "权值：" + min);
+            sum += min;
+            lowcost[minIndex] = 0;
+
+            for (int j = 0; j < vertexSize; j++) {
+                if (lowcost[j] != 0 && lowcost[j] > adjMat[minIndex][j]) {
+                    lowcost[j] = adjMat[minIndex][j];
+                    adjvex[j] = minIndex;
+                }
+            }
+
+        }
+        System.out.println("最小生成树权重之和为：" + sum);
+        System.out.println(Arrays.toString(adjvex));
+
+    }
+
+    public void prim2(){
+        int[] lowcost = new int[vertexSize];
+        int[] adjvex = new int[vertexSize];
+        int m = 0;
+
+        System.arraycopy(adjMat[0],0,lowcost,0,lowcost.length);
+
+        int sum = 0;
+        for (int i = 1; i <vertexSize; i++) {
+            int min = MAX_NUMBER;
+            int minIndex = 0;
+            for (int j = 0; j < vertexSize; j++) {
+                if (lowcost[j] !=0 && lowcost[j] < min){
+                    min = lowcost[j];
+                    minIndex = j;
+                }
+            }
+            System.out.println("顶点:" + adjvex[minIndex] + "权值：" + min);
+            sum += min;
+            lowcost[minIndex] = 0;
+            adjvex[++m] = minIndex;
+            for (int j = 0; j < vertexSize; j++) {
+                if (lowcost[j] != 0 && lowcost[j] > adjMat[minIndex][j]){
+                    lowcost[j] = adjMat[minIndex][j];
+                }
+            }
+        }
+        System.out.println("最小生成树权重之和为：" + sum);
+        System.out.println(Arrays.toString(adjvex));
     }
 
 }
